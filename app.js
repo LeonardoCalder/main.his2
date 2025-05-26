@@ -1,43 +1,27 @@
-document.getElementById('appointmentForm').addEventListener('submit', function(event) {
-  event.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+  const loadingText = document.getElementById('loading');
 
-  // Obtener los valores del formulario
-  const patientName = document.getElementById('patientName').value;
-  const appointmentDate = document.getElementById('appointmentDate').value;
-  const appointmentTime = document.getElementById('appointmentTime').value;
-  const reason = document.getElementById('reason').value;
+  const navigateWithFeedback = (buttonId, url) => {
+    const button = document.getElementById(buttonId);
+    button.disabled = true;
+    button.textContent = 'Cargando...';
+    loadingText.style.display = 'block';
 
-  // Construir el objeto con los datos de la cita
-  const appointmentData = {
-    patientName,
-    appointmentDate,
-    appointmentTime,
-    reason
+    // Pequeña demora para que el usuario vea la animación
+    setTimeout(() => {
+      window.location.href = url;
+    }, 1200);
   };
 
-  console.log("Datos a enviar:", appointmentData);
+  document.getElementById('btnSolicitud').addEventListener('click', () => {
+    navigateWithFeedback('btnSolicitud', 'https://solicitud-del-procedimiento-quirurgico.onrender.com/');
+  });
 
-  // Enviar la solicitud al backend
-  fetch('https://hl7-fhir-ehr-solangie-9665.onrender.com/appointment/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(appointmentData)
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Error en la solicitud: ' + response.statusText);
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log('Cita agendada exitosamente:', data);
-    document.getElementById('result').textContent = '¡Cita agendada exitosamente! ID: ' + data._id;
-    document.getElementById('result').style.color = 'green';
-    document.getElementById('appointmentForm').reset();
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById('result').textContent = 'Error al agendar la cita: ' + error.message;
-    document.getElementById('result').style.color = 'red';
+  document.getElementById('btnProgramacion').addEventListener('click', () => {
+    navigateWithFeedback('btnProgramacion', 'https://programacion-del-procedimiento-quirurgico.onrender.com/');
+  });
+
+  document.getElementById('btnFormulario').addEventListener('click', () => {
+    navigateWithFeedback('btnFormulario', 'https://realizacion-del-procedimiento-quirurgico.onrender.com/');
   });
 });
