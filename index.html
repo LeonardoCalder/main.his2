@@ -1,131 +1,89 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agendar Cita Médica</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HIS 2</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      padding: 30px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #e0f7f7;
+      margin: 0;
+      padding: 0;
+      color: #004d40;
     }
 
-    h1 {
-      color: #800020;
+    header {
+      background-color: #00695c;
+      color: white;
+      padding: 1.5rem;
       text-align: center;
-    }
-
-    form {
-      max-width: 500px;
-      margin: auto;
-      background-color: #fff;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(128, 0, 32, 0.2);
-      border: 2px solid #800020;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
+      font-size: 2rem;
       font-weight: bold;
-      color: #800020;
     }
 
-    input, textarea {
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-width: 800px;
+      margin: 3rem auto;
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border: 3px solid #00bfa5;
+    }
+
+    .nav-button {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1em;
-    }
-
-    button {
-      background-color: #800020;
-      color: #fff;
-      padding: 12px 20px;
+      max-width: 400px;
+      padding: 1rem;
+      margin: 1rem 0;
+      background-color: #00bfa5;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
       border: none;
       border-radius: 5px;
-      font-size: 1em;
       cursor: pointer;
-      margin-top: 20px;
-      width: 100%;
+      transition: background 0.3s ease;
     }
 
-    button:hover {
-      background-color: #a0002d;
+    .nav-button:hover {
+      background-color: #009688;
     }
 
-    #result {
-      margin-top: 20px;
-      text-align: center;
-      font-weight: bold;
+    @media (max-width: 600px) {
+      .container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      .nav-button {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Formulario para Agendar Cita Médica</h1>
-  <form id="appointmentForm">
-    <label for="patientName">Nombre del Paciente:</label>
-    <input type="text" id="patientName" name="patientName" required>
 
-    <label for="appointmentDate">Fecha de la Cita:</label>
-    <input type="date" id="appointmentDate" name="appointmentDate" required>
+  <header>HIS 2</header>
 
-    <label for="appointmentTime">Hora de la Cita:</label>
-    <input type="time" id="appointmentTime" name="appointmentTime" required>
+  <div class="container">
+    <button class="nav-button" onclick="window.location.href='https://solicitud-del-procedimiento-quirurgico.onrender.com/'">
+      Solicitud de Procedimiento Quirúrgico
+    </button>
 
-    <label for="reason">Motivo de la Cita:</label>
-    <textarea id="reason" name="reason" rows="4" required></textarea>
+    <button class="nav-button" onclick="window.location.href='https://programacion-del-procedimiento-quirurgico.onrender.com/'">
+      Programación del procedimiento quirúrgico
+    </button>
 
-    <button type="submit">Agendar Cita</button>
-  </form>
+    <button class="nav-button" onclick="window.location.href='https://realizacion-del-procedimiento-quirurgico.onrender.com/'">
+      Formulario Solicitud Procedimiento Médico
+    </button>
+  </div>
 
-  <div id="result"></div>
-
-  <script>
-    document.getElementById('appointmentForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-
-      const patientName = document.getElementById('patientName').value;
-      const appointmentDate = document.getElementById('appointmentDate').value;
-      const appointmentTime = document.getElementById('appointmentTime').value;
-      const reason = document.getElementById('reason').value;
-
-      const appointmentData = {
-        patientName,
-        appointmentDate,
-        appointmentTime,
-        reason
-      };
-
-      console.log("Datos a enviar:", appointmentData);
-
-      fetch('https://hl7-fhir-ehr-solangie-9665.onrender.com/appointment/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(appointmentData)
-      })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error en la solicitud: ' + response.statusText);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Cita agendada exitosamente:', data);
-        document.getElementById('result').textContent = '¡Cita agendada exitosamente! ID: ' + data._id;
-        document.getElementById('result').style.color = 'green';
-        document.getElementById('appointmentForm').reset();
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('result').textContent = 'Error al agendar la cita: ' + error.message;
-        document.getElementById('result').style.color = 'red';
-      });
-    });
-  </script>
 </body>
 </html>
