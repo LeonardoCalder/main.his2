@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendar Cita Médica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #800020;
+      text-align: center;
+    }
+
+    form {
+      max-width: 500px;
+      margin: auto;
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(128, 0, 32, 0.2);
+      border: 2px solid #800020;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #800020;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+
+    button {
+      background-color: #800020;
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #a0002d;
+    }
+
+    #result {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Formulario para Agendar Cita Médica</h1>
+  <form id="appointmentForm">
+    <label for="patientName">Nombre del Paciente:</label>
+    <input type="text" id="patientName" name="patientName" required>
+
+    <label for="appointmentDate">Fecha de la Cita:</label>
+    <input type="date" id="appointmentDate" name="appointmentDate" required>
+
+    <label for="appointmentTime">Hora de la Cita:</label>
+    <input type="time" id="appointmentTime" name="appointmentTime" required>
+
+    <label for="reason">Motivo de la Cita:</label>
+    <textarea id="reason" name="reason" rows="4" required></textarea>
+
+    <button type="submit">Agendar Cita</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('appointmentForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const patientName = document.getElementById('patientName').value;
+      const appointmentDate = document.getElementById('appointmentDate').value;
+      const appointmentTime = document.getElementById('appointmentTime').value;
+      const reason = document.getElementById('reason').value;
+
+      const appointmentData = {
+        patientName,
+        appointmentDate,
+        appointmentTime,
+        reason
+      };
+
+      console.log("Datos a enviar:", appointmentData);
+
+      fetch('https://hl7-fhir-ehr-solangie-9665.onrender.com/appointment/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(appointmentData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error en la solicitud: ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Cita agendada exitosamente:', data);
+        document.getElementById('result').textContent = '¡Cita agendada exitosamente! ID: ' + data._id;
+        document.getElementById('result').style.color = 'green';
+        document.getElementById('appointmentForm').reset();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('result').textContent = 'Error al agendar la cita: ' + error.message;
+        document.getElementById('result').style.color = 'red';
+      });
+    });
+  </script>
+</body>
+</html>
